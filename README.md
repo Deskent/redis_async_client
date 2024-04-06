@@ -1,3 +1,10 @@
+### Stack:
+
+- [x] <a href="https://www.python.org/"><img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-plain.svg" alt="python" width="15" height="15"/>
+  Python 3.10+ <br/></a>
+- [x] <a href="https://github.com/redis/redis-py"><img src="https://avatars.githubusercontent.com/u/1529926?s=48&v=4" alt="niquests" width="15" height="15"/>
+  Redis 5.0.3+ <br/>
+
 ### Installation
 
     pip install redis-async-client
