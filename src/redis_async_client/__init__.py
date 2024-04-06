@@ -3,12 +3,14 @@ from typing import AsyncGenerator
 from redis import asyncio as redis_async
 
 from .core.async_client import AsyncRedisClient
+from .core.exc import RedisAsyncClientException
 from .core.settings import RedisSettings
 
 
 __all__ = (
     "AsyncRedisClient",
     "RedisSettings",
+    "RedisAsyncClientException",
     "get_redis_connection",
 )
 

@@ -5,7 +5,7 @@ import redis
 
 @dataclasses.dataclass
 class RedisSettings:
-    """Redis settings class.
+    """Redis settings dataclass.
 
     Attributes:
 

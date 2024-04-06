@@ -4,9 +4,9 @@ from abc import abstractmethod
 from redis.asyncio import Redis
 
 from ._constants import STORE_TIME_SEC
+from ._logger import logger
 from ._types import JSON
 from .exc import RedisAsyncClientException
-from .logger import logger
 
 
 class RedisBase:
