@@ -1,6 +1,6 @@
 import dataclasses
 
-import redis.asyncio as redis
+import redis
 
 
 @dataclasses.dataclass
@@ -16,7 +16,7 @@ class RedisSettings:
         REDIS_DB: int = 0
 
     Methods
-        get_url_by_name
+        get_url
 
         make_pool
 
@@ -35,10 +35,7 @@ class RedisSettings:
 
         return redis_url
 
-    def make_pool(self, url: str = '') -> redis.ConnectionPool:
+    def make_pool(self, url: str = '') -> redis.asyncio.ConnectionPool:
         if not url:
             url = self.get_url()
-        return redis.ConnectionPool.from_url(url)
-
-
-redis_settings = RedisSettings()
+        return redis.asyncio.ConnectionPool.from_url(url)

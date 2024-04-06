@@ -1,12 +1,14 @@
+from typing import Any
+
 from ._constants import STORE_TIME_SEC
 from ._types import JSON
 from .base import (
-    AppendRedisDB,
-    DeleteRedisDB,
-    GetRedisDB,
+    AppendOperator,
+    DeleteOperator,
+    LoadOperator,
     RedisBase,
-    SetRedisDB,
-    UpdateRedisDB,
+    SaveOperator,
+    UpdateOperator,
 )
 from .logger import logger
 
@@ -54,7 +56,7 @@ class AsyncRedisClient(RedisBase):
             f'Key [{key}]: Timeout: {timeout_sec}. Saved data: {len(data)}'
         )
 
-        return await SetRedisDB(
+        return await SaveOperator(
             client=self.client,
             key=key,
             data=data,
@@ -64,7 +66,7 @@ class AsyncRedisClient(RedisBase):
     async def load(self, key: str) -> JSON:
         """Load key from redis."""
 
-        data: JSON = await GetRedisDB(
+        data: JSON = await LoadOperator(
             client=self.client,
             key=key,
         ).run()
@@ -77,7 +79,7 @@ class AsyncRedisClient(RedisBase):
 
         logger.debug(f'Key [{key}]: deleted')
 
-        return await DeleteRedisDB(
+        return await DeleteOperator(
             client=self.client,
             key=key,
         ).run()
@@ -95,7 +97,7 @@ class AsyncRedisClient(RedisBase):
             f'Data will be update: {len(data)}'
         )
 
-        updated: dict = await UpdateRedisDB(
+        updated: dict = await UpdateOperator(
             client=self.client,
             key=key,
             data=data,
@@ -107,12 +109,12 @@ class AsyncRedisClient(RedisBase):
     async def append(
         self,
         key: str,
-        data: JSON,
+        data: Any,
         timeout_sec: int = STORE_TIME_SEC,
     ) -> list:
         """Append data to list."""
 
-        appended: list = await AppendRedisDB(
+        appended: list = await AppendOperator(
             client=self.client,
             key=key,
             data=data,

@@ -3,10 +3,10 @@ from abc import abstractmethod
 
 from redis.asyncio import Redis
 
-from src.redis_async_client.core._constants import STORE_TIME_SEC
-from src.redis_async_client.core._types import JSON
-from src.redis_async_client.core.exc import RedisAsyncClientException
-from src.redis_async_client.core.logger import logger
+from ._constants import STORE_TIME_SEC
+from ._types import JSON
+from .exc import RedisAsyncClientException
+from .logger import logger
 
 
 class RedisBase:
@@ -22,7 +22,7 @@ class RedisBase:
         self.client: Redis = client
 
 
-class RedisOperator(RedisBase):
+class BaseOperator(RedisBase):
     def __init__(self, client: Redis, key: str):
         super().__init__(client)
         self.key: str = key
@@ -47,8 +47,8 @@ class RedisOperator(RedisBase):
         raise NotImplementedError
 
 
-class SetRedisDB(RedisOperator):
-    """Save data to Redis by key"""
+class SaveOperator(BaseOperator):
+    """Save data to Redis by key."""
 
     def __init__(
         self,
@@ -72,7 +72,7 @@ class SetRedisDB(RedisOperator):
         )
 
 
-class GetRedisDB(RedisOperator):
+class LoadOperator(BaseOperator):
     """Load data from Redis by key"""
 
     async def _execute(self) -> JSON:
@@ -84,7 +84,7 @@ class GetRedisDB(RedisOperator):
         return json.loads(data)
 
 
-class DeleteRedisDB(RedisOperator):
+class DeleteOperator(BaseOperator):
     """Delete data from Redis by key"""
 
     async def _execute(self) -> None:
@@ -93,7 +93,7 @@ class DeleteRedisDB(RedisOperator):
         await self.client.delete(self.key)
 
 
-class UpdateRedisDB(SetRedisDB):
+class UpdateOperator(SaveOperator):
     """Update dictionary data by key"""
 
     async def _execute(self) -> dict:
@@ -121,7 +121,7 @@ class UpdateRedisDB(SetRedisDB):
         return old_data
 
 
-class AppendRedisDB(SetRedisDB):
+class AppendOperator(SaveOperator):
     """Append data to list"""
 
     async def _execute(self) -> list:
