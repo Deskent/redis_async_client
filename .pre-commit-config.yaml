@@ -1,0 +1,54 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+exclude: venv
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  # Tests
+  - repo: local
+    hooks:
+      - id: auto-test
+        name: auto-tests
+        entry: python -m pytest ./tests
+        pass_filenames: false
+        language: system
+
+  # Flake8
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-functions==0.0.8
+          - flake8-variables-names==0.0.6
+          - flake8-cognitive-complexity==0.1.0
+
+  # Black format
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        language_version: python3.11
+        entry: black --config pyproject.toml .
+
+  # Isort
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (python)
+
+  # Ruff check
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.4
+    hooks:
+      - id: ruff
+        name: Ruff checker (python)
+        entry: python -m ruff check --config pyproject.toml ./src

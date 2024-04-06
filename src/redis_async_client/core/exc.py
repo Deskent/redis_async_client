@@ -1,0 +1,2 @@
+class RedisAsyncClientException(Exception):
+    pass
