@@ -45,6 +45,20 @@ async def test_append_method(redis_test_settings: RedisSettings):
         assert result == [1, 2, 3, 4]
 
 
+async def test_extend_method(redis_test_settings: RedisSettings):
+    async for client in get_redis_connection(redis_test_settings):
+        await client.delete(KEY)
+        data = [1, 2, 3]
+        await client.extend(KEY, data)
+        result: dict = await client.load(KEY)
+        assert result == data
+        second_data = [4]
+        await client.extend(KEY, second_data)
+        result: dict = await client.load(KEY)
+        assert result == [1, 2, 3, 4]
+        await client.delete(KEY)
+
+
 async def test_extract_method(redis_test_settings: RedisSettings):
     async for client in get_redis_connection(redis_test_settings):
         data = [1, 2, 3]

@@ -134,10 +134,42 @@ class AppendOperator(SaveOperator):
             old_data: list = json.loads(old_data)
         if not isinstance(old_data, list):
             raise RedisAsyncClientException(
-                f'Data for update must be list, got {type(old_data)}'
+                f'Existing data must be list, got {type(old_data)}'
             )
 
         old_data.append(self._data)
+        new_data: str = json.dumps(old_data)
+        await self.client.set(
+            name=self.key,
+            value=new_data,
+            ex=self.timeout_sec,
+        )
+
+        return old_data
+
+
+class ExtendOperator(SaveOperator):
+    """Extend list with data."""
+
+    async def _execute(self) -> list:
+        """Append data to list"""
+
+        if not isinstance(self._data, list):
+            raise RedisAsyncClientException(
+                f'Data must be list, got {type(self._data)}'
+            )
+
+        old_data: str = await self.client.get(self.key)
+        if not old_data:
+            old_data: list = []
+        else:
+            old_data: list = json.loads(old_data)
+        if not isinstance(old_data, list):
+            raise RedisAsyncClientException(
+                f'Existing data must be list, got {type(old_data)}'
+            )
+
+        old_data.extend(self._data)
         new_data: str = json.dumps(old_data)
         await self.client.set(
             name=self.key,

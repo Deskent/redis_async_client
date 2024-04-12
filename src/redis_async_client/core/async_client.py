@@ -3,6 +3,7 @@ from typing import Any
 from ._base import (
     AppendOperator,
     DeleteOperator,
+    ExtendOperator,
     LoadOperator,
     RedisBase,
     SaveOperator,
@@ -127,6 +128,28 @@ class AsyncRedisClient(RedisBase):
         )
 
         return appended
+
+    async def extend(
+        self,
+        key: str,
+        data: list,
+        timeout_sec: int = STORE_TIME_SEC,
+    ) -> list:
+        """Extend list with data."""
+
+        extended: list = await ExtendOperator(
+            client=self.client,
+            key=key,
+            data=data,
+            timeout_sec=timeout_sec,
+        ).run()
+
+        logger.debug(
+            f'Key [{key}]: Timeout: {timeout_sec}. '
+            f'Data extended. Now: {len(extended)}'
+        )
+
+        return extended
 
     async def extract(self, key: str) -> JSON:
         """Load data from Redis and delete its key."""

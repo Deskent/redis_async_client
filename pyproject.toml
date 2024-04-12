@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "redis-async-client"
-version = "0.1.4"
+version = "0.1.5"
 description = "Redis async client."
 authors = ["deskent <battenetciz@gmail.com>"]
 license = "MIT"
