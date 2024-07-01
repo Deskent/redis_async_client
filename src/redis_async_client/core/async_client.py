@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Type
 
 from ._base import (
     AppendOperator,
@@ -64,7 +64,11 @@ class AsyncRedisClient(RedisBase):
             timeout_sec=timeout_sec,
         ).run()
 
-    async def load(self, key: str) -> JSON:
+    async def load(
+        self,
+        key: str,
+        default_result: Type[list | set | tuple | dict | str] = list,
+    ) -> JSON:
         """Load key from redis."""
 
         data: JSON = await LoadOperator(
@@ -72,8 +76,7 @@ class AsyncRedisClient(RedisBase):
             key=key,
         ).run()
         logger.debug(f'Key [{key}]: load data: {len(data)}')
-
-        return data
+        return data if data else default_result()
 
     async def delete(self, key: str) -> None:
         """Delete key from redis."""

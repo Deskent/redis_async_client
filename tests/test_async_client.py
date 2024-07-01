@@ -1,3 +1,4 @@
+import pytest
 import redis.asyncio as redis_async
 
 from src.redis_async_client import (
@@ -66,3 +67,19 @@ async def test_extract_method(redis_test_settings: RedisSettings):
         result: dict = await client.extract(KEY)
         assert result == data
         assert await client.load(KEY) == []
+
+
+@pytest.mark.parametrize(
+    'income_type',
+    [
+        list,
+        tuple,
+        dict,
+        set,
+        str,
+    ],
+)
+async def test_load_empty(redis_test_settings: RedisSettings, income_type):
+    async for client in get_redis_connection(redis_test_settings):
+        result = await client.load(KEY, income_type)
+        assert isinstance(result, income_type)
